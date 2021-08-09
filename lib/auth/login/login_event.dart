@@ -10,6 +10,8 @@ class LoginPasswordChanged extends LoginEvent {
 	LoginPasswordChanged({this.password});
 }
 
-class LoginSubmitted extends LoginEvent {
-	
-}
+class LoginSubmitted extends LoginEvent {}
+
+class LoginWithFacebook extends LoginEvent{}
+
+class LoginWithGoogle extends LoginEvent{}

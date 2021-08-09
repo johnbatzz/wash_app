@@ -1,26 +1,31 @@
-import 'package:wash_app/auth/form_submission_status.dart';
+import '../form_submission_status.dart';
 
-class LoginState {
+class SignUpState {
 	final String userName;
 	bool get isValidUserName => RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(userName);
 	final String password;
 	bool get isValidPassword => password.length > 6;
 	final FormSubmissionStatus formStatus;
+	final String phoneNumber;
+	bool get isValidPhoneNumber => phoneNumber.length == 11;
 	
-	LoginState({
-		this.userName   = '',
-		this.password   = '',
-		this.formStatus = const InitialFormStatus(),
+	SignUpState({
+		this.userName     = '',
+		this.password     = '',
+		this.phoneNumber  = '',
+		this.formStatus   = const InitialFormStatus(),
 	});
 	
-	LoginState copyWith({
+	SignUpState copyWith({
 		String userName,
 		String password,
+		String phoneNumber,
 		FormSubmissionStatus formStatus
 	}) {
-		return LoginState(
+		return SignUpState(
 			userName    : userName    ?? this.userName,
 			password    : password    ?? this.password,
+			phoneNumber : phoneNumber ?? this.phoneNumber,
 			formStatus  : formStatus  ?? this.formStatus,
 		);
 	}

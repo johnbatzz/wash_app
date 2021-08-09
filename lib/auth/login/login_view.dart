@@ -2,176 +2,245 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:wash_app/auth/form_submission_status.dart';
+import 'package:wash_app/auth/auth_cubit.dart';
 import 'package:wash_app/auth/login/login_bloc.dart';
 import 'package:wash_app/auth/login/login_event.dart';
+import 'package:wash_app/widget/custom_spacer.dart';
 
 import '../auth_repository.dart';
+import 'login_state.dart';
 
-class Login extends StatefulWidget {
-	LoginState createState() => LoginState();
-}
-
-class LoginState extends State<Login> {
-	
-	final _formKey = GlobalKey<FormState>();
+class LoginView extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-  	return Scaffold(
-		  body: BlocProvider(
-			  create: (context) => LoginBloc(
-				  authRepository: context.read<AuthRepository>()
-			  ),
-			  child: _loginForm(context)
-		  )
-	  );
+    return Scaffold(
+      body: BlocProvider(
+        create: (context) => LoginBloc(
+          authRepo: context.read<AuthRepository>(),
+          authCubit: context.read<AuthCubit>(),
+        ),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            _loginForm(),
+            _showSignUpButton(context),
+          ],
+        ),
+      ),
+    );
   }
-  
-  Widget _loginForm(context) {
-  	return BlocProvider(
-		  create: (context) => LoginBloc(
-			  authRepository: context.read<AuthRepository>()
-		  ),
-  	  child: Form(
-		  key: _formKey,
-		  child: Center(
-			  child: Padding(
-				  padding: EdgeInsets.symmetric(horizontal: 30.0),
-				  child: Column(
-					  mainAxisAlignment: MainAxisAlignment.center,
-					  crossAxisAlignment: CrossAxisAlignment.center,
-					  children: [
-						  _userNameField(),
-						  _passwordField(),
-						  SizedBox(
-							  height: 30,
-						  ),
-						  _loginButton(context),
-						  SizedBox(
-							  height: 100,
-							  child: Center(
-								  child: Text(
-									  "OR"
-								  ),
-							  ),
-						  ),
-						  _facebookLoginButton(context),
-						  SizedBox(
-							  height: 30,
-						  ),
-						  _googleSigninButton(context)
-					  ],
-				  ),
-			  ),
-		  ),
-	  ),
-  	);
+
+  Widget _loginForm() {
+    return BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          final formStatus = state.formStatus;
+          if (formStatus is SubmissionFailed) {
+            _showSnackBar(context, formStatus.exception.toString());
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _userNameField(),
+                CustomSpacer(
+                  height: 10,
+                ),
+                _passwordField(),
+                CustomSpacer(
+                  height: 40,
+                ),
+                _loginButton(),
+                CustomSpacer(
+                  height: 40,
+                ),
+                _otherLogin(),
+                CustomSpacer(
+                  height: 40,
+                ),
+                _facebookLoginButton(),
+                CustomSpacer(height: 30),
+                _googleSigninButton()
+              ],
+            ),
+          ),
+        ));
   }
-  
-  
+
+  Widget _otherLogin() {
+    return Text('OR');
+  }
+
+  Widget _showSignUpButton(BuildContext context) {
+    return SafeArea(
+      child: TextButton(
+        child: Text('Don\'t have an account? Sign up.'),
+        onPressed: () => context.read<AuthCubit>().showSignUp(),
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Widget _userNameField() {
-  	return BlocBuilder<LoginBloc, LoginState>(
-		  builder: (context, state) {
-			  return  Padding(
-				  padding: EdgeInsets.all(5.0),
-					  child: TextFormField(
-						  keyboardType: TextInputType.emailAddress,
-						  decoration: InputDecoration(
-							  hintText: "Email Address",
-							  prefixIcon: Icon(
-							    Icons.person
-							  )
-						  ),
-						  validator: (value) => state.isValidUserName ? null : "Username is too short.",
-						  onChanged: (value) => context.read<LoginBloc>().add(
-							  LoginUsernameChanged(userName: value)
-						  ),
-					  ),
-			  );
-	    });
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return Padding(
+        padding: EdgeInsets.all(5.0),
+        child: MediaQuery(
+          child: TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              hintText: "Email Address",
+              prefixIcon: Icon(Icons.person),
+              border: new OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                borderSide: BorderSide(width: 1, color: Colors.black12),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderSide: BorderSide(width: 1, color: Colors.black12),
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderSide: BorderSide(width: 1, color: Colors.black)),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderSide: BorderSide(width: .5, color: Colors.black12)),
+            ),
+            validator: (value) => state.isValidUserName
+                ? null
+                : value.isEmpty
+                    ? "Email is required."
+                    : "Invalid email address.",
+            onChanged: (value) => context
+                .read<LoginBloc>()
+                .add(LoginUsernameChanged(userName: value)),
+          ),
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        ),
+      );
+    });
   }
 
   Widget _passwordField() {
-	  return Padding(
-		  padding: EdgeInsets.all(5.0),
-		  child: TextFormField(
-			  obscureText: true,
-			  keyboardType: TextInputType.visiblePassword,
-			  decoration: InputDecoration(
-				  hintText: "Password",
-				  prefixIcon: Icon(
-					  Icons.security_outlined
-				  )
-			  ),
-			  validator: (value) => null,
-		  ),
-	  );
-  }
-
-  Widget _loginButton(context) {
-	  return MaterialButton(
-		  color: Colors.blueAccent,
-		  textColor: Colors.white,
-		  elevation: 2,
-		  minWidth: MediaQuery.of(context).size.width * 0.8,
-		  height: 50.0,
-		  child: Text(
-			  'Login'
-		  ),
-		  onPressed: () => {},
-	  );
-  }
-  
-  Widget _facebookLoginButton(context) {
-      return MaterialButton(
-	      color: Colors.blueAccent,
-	      textColor: Colors.white,
-	      elevation: 2,
-	      minWidth: MediaQuery.of(context).size.width * 0.8,
-	      height: 50.0,
-	      child: Row(
-		      mainAxisAlignment: MainAxisAlignment.center,
-		      children: [
-			      new Icon(
-				      MdiIcons.facebook
-			      ),
-			      SizedBox(
-				      width: 20,
-			      ),
-			      Text(
-				      'Signin with Facebook'
-			      ),
-		      ],
-	      ),
-	      onPressed: () => {},
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return Padding(
+        padding: EdgeInsets.all(5.0),
+        child: MediaQuery(
+          child: TextFormField(
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                hintText: "Password",
+                prefixIcon: Icon(Icons.security_outlined),
+                border: new OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderSide: BorderSide(width: 1, color: Colors.black12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderSide: BorderSide(width: 1, color: Colors.black12)),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderSide: BorderSide(width: .5, color: Colors.black12)),
+              ),
+              validator: (value) => state.isValidPassword
+                  ? null
+                  : value.isEmpty
+                      ? "Password is required."
+                      : "Password must atleast 6 characters.",
+              onChanged: (value) => context
+                  .read<LoginBloc>()
+                  .add(LoginPasswordChanged(password: value))),
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        ),
       );
+    });
   }
 
-  Widget _googleSigninButton(context) {
-	  return MaterialButton(
-		  color: Colors.white,
-		  textColor: Colors.redAccent,
-		  elevation: 2,
-		  minWidth: MediaQuery.of(context).size.width * 0.8,
-		  height: 50.0,
-		  child: Row(
-			  mainAxisAlignment: MainAxisAlignment.center,
-			  children: [
-			  	new Icon(
-					  MdiIcons.google
-				  ),
-				  SizedBox(
-					  width: 20,
-				  ),
-				  Text(
-					  'Signin with Google'
-				  ),
-			  ],
-		  ),
-		  onPressed: () => {},
-	  );
+  Widget _loginButton() {
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return state.formStatus is FormSubmitting
+          ? MaterialButton(
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              elevation: 2,
+              height: 50.0,
+              disabledColor: Colors.blueAccent,
+              disabledTextColor: Colors.white,
+              minWidth: MediaQuery.of(context).size.width * 0.8,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.blueAccent,
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+              onPressed: null,
+            )
+          : MaterialButton(
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              elevation: 2,
+              height: 50.0,
+              minWidth: MediaQuery.of(context).size.width * 0.8,
+              child: Text('Login'),
+              onPressed: () => {
+                if (_formKey.currentState.validate())
+                  {context.read<LoginBloc>().add(LoginSubmitted())}
+              },
+            );
+    });
   }
-	
-  
-  
+
+  Widget _facebookLoginButton() {
+    return MaterialButton(
+      color: Colors.blueAccent,
+      textColor: Colors.white,
+      elevation: 2,
+      height: 50.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          new Icon(MdiIcons.facebook),
+          SizedBox(
+            width: 20,
+          ),
+          Text('Signin with Facebook'),
+        ],
+      ),
+      onPressed: () => {},
+    );
+  }
+
+  Widget _googleSigninButton() {
+    return MaterialButton(
+      color: Colors.white,
+      textColor: Colors.redAccent,
+      elevation: 2,
+      height: 50.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          new Icon(MdiIcons.google),
+          SizedBox(
+            width: 20,
+          ),
+          Text('Signin with Google'),
+        ],
+      ),
+      onPressed: () => {},
+    );
+  }
 }

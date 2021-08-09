@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wash_app/auth/login/login_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:wash_app/session_cubit.dart';
 
+import 'app_navigator.dart';
 import 'auth/auth_repository.dart';
 
-void main() {
+void main() async {
+	WidgetsFlutterBinding.ensureInitialized();
+	await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -20,7 +26,10 @@ class MyApp extends StatelessWidget {
       ),
       home: RepositoryProvider(
 	      create: (context) => AuthRepository(),
-	      child: Login(),
+	      child:  BlocProvider(
+		      create: (context) => SessionCubit(authRepo: context.read<AuthRepository>()),
+		      child: AppNavigator(),
+	      ),
       ),
     );
   }
