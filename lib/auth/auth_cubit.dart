@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/data/model/user.dart';
+import 'package:washapp/data/model/user.dart';
 
 import '../session_cubit.dart';
 import 'auth_credentials.dart';

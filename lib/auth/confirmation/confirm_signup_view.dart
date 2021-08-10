@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/auth/auth_cubit.dart';
-import 'package:wash_app/auth/confirmation/confirmation_bloc.dart';
+import 'package:washapp/auth/auth_cubit.dart';
+import 'package:washapp/auth/confirmation/confirmation_bloc.dart';
 
 import '../form_submission_status.dart';
 import '../auth_repository.dart';

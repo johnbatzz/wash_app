@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/session_cubit.dart';
+import 'package:washapp/session_cubit.dart';
 
 class SessionView extends StatelessWidget {
 	@override

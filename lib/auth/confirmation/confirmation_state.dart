@@ -1,4 +1,4 @@
-import 'package:wash_app/auth/form_submission_status.dart';
+import 'package:washapp/auth/form_submission_status.dart';
 
 class ConfirmationState  {
 	final String code;

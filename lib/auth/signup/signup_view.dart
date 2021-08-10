@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/auth/signup/signup_bloc.dart';
-import 'package:wash_app/auth/signup/signup_state.dart';
-import 'package:wash_app/widget/custom_spacer.dart';
+import 'package:washapp/auth/signup/signup_bloc.dart';
+import 'package:washapp/auth/signup/signup_state.dart';
+import 'package:washapp/widget/custom_spacer.dart';
 
 import '../form_submission_status.dart';
 import '../auth_cubit.dart';

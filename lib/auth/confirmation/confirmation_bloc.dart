@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/auth/auth_cubit.dart';
-import 'package:wash_app/auth/auth_repository.dart';
-import 'package:wash_app/auth/confirmation/confirmation_event.dart';
-import 'package:wash_app/auth/confirmation/confirmation_state.dart';
+import 'package:washapp/auth/auth_cubit.dart';
+import 'package:washapp/auth/auth_repository.dart';
+import 'package:washapp/auth/confirmation/confirmation_event.dart';
+import 'package:washapp/auth/confirmation/confirmation_state.dart';
 
 import '../form_submission_status.dart';
 

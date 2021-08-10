@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/auth/auth_cubit.dart';
-import 'package:wash_app/sesstion_state.dart';
+import 'package:washapp/auth/auth_cubit.dart';
+import 'package:washapp/sesstion_state.dart';
 
 import 'auth/auth_credentials.dart';
 import 'auth/auth_repository.dart';

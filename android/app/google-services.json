@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1052481780432",
+    "project_id": "washapp-68283",
+    "storage_bucket": "washapp-68283.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052481780432:android:0a15e1005a42a89bacfcd5",
+        "android_client_info": {
+          "package_name": "com.washapp.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052481780432-1p78qtjqri5ms1a4qmpmofk28o4qgmmp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.washapp.app",
+            "certificate_hash": "14b9e089d317a476ab9063e65d412bb7c247cd18"
+          }
+        },
+        {
+          "client_id": "1052481780432-68qbkui4nak6tahfubn28607327jessh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKF4SexRO9xsmV3PYDoFyNTrqVYBMeGRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052481780432-68qbkui4nak6tahfubn28607327jessh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1052481780432-fpupghktomad9hjfenstnvjdk6gn3mpb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.washapp.app",
+                "app_store_id": "1579221569"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

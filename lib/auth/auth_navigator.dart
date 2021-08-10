@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/auth/auth_cubit.dart';
-import 'package:wash_app/auth/confirmation/confirm_signup_view.dart';
-import 'package:wash_app/auth/signup/signup_view.dart';
+import 'package:washapp/auth/auth_cubit.dart';
+import 'package:washapp/auth/confirmation/confirm_signup_view.dart';
+import 'package:washapp/auth/signup/signup_view.dart';
 
 import 'login/login_view.dart';
 

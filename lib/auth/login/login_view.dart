@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:wash_app/auth/form_submission_status.dart';
-import 'package:wash_app/auth/auth_cubit.dart';
-import 'package:wash_app/auth/login/login_bloc.dart';
-import 'package:wash_app/auth/login/login_event.dart';
-import 'package:wash_app/widget/custom_spacer.dart';
+import 'package:washapp/auth/form_submission_status.dart';
+import 'package:washapp/auth/auth_cubit.dart';
+import 'package:washapp/auth/login/login_bloc.dart';
+import 'package:washapp/auth/login/login_event.dart';
+import 'package:washapp/widget/custom_spacer.dart';
 
 import '../auth_repository.dart';
 import 'login_state.dart';
@@ -44,7 +44,7 @@ class LoginView extends StatelessWidget {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -54,18 +54,18 @@ class LoginView extends StatelessWidget {
                 ),
                 _passwordField(),
                 CustomSpacer(
-                  height: 40,
+                  height: 20,
                 ),
                 _loginButton(),
                 CustomSpacer(
-                  height: 40,
+                  height: 20,
                 ),
                 _otherLogin(),
                 CustomSpacer(
-                  height: 40,
+                  height: 20,
                 ),
                 _facebookLoginButton(),
-                CustomSpacer(height: 30),
+                CustomSpacer(height: 20),
                 _googleSigninButton()
               ],
             ),
@@ -74,7 +74,7 @@ class LoginView extends StatelessWidget {
   }
 
   Widget _otherLogin() {
-    return Text('OR');
+    return Text('Or Signin with');
   }
 
   Widget _showSignUpButton(BuildContext context) {
@@ -94,7 +94,7 @@ class LoginView extends StatelessWidget {
   Widget _userNameField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return Padding(
-        padding: EdgeInsets.all(5.0),
+        padding: EdgeInsets.all(0.0),
         child: MediaQuery(
           child: TextFormField(
             keyboardType: TextInputType.emailAddress,
@@ -102,18 +102,18 @@ class LoginView extends StatelessWidget {
               hintText: "Email Address",
               prefixIcon: Icon(Icons.person),
               border: new OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 borderSide: BorderSide(width: 1, color: Colors.black12),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
                 borderSide: BorderSide(width: 1, color: Colors.black12),
               ),
               focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                   borderSide: BorderSide(width: 1, color: Colors.black)),
               errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                   borderSide: BorderSide(width: .5, color: Colors.black12)),
             ),
             validator: (value) => state.isValidUserName
@@ -125,7 +125,7 @@ class LoginView extends StatelessWidget {
                 .read<LoginBloc>()
                 .add(LoginUsernameChanged(userName: value)),
           ),
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaleFactor: .8),
         ),
       );
     });
@@ -134,7 +134,7 @@ class LoginView extends StatelessWidget {
   Widget _passwordField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return Padding(
-        padding: EdgeInsets.all(5.0),
+        padding: EdgeInsets.all(0.0),
         child: MediaQuery(
           child: TextFormField(
               obscureText: true,
@@ -143,18 +143,18 @@ class LoginView extends StatelessWidget {
                 hintText: "Password",
                 prefixIcon: Icon(Icons.security_outlined),
                 border: new OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.grey),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderSide: BorderSide(width: 1, color: Colors.black12),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                   borderSide: BorderSide(width: 1, color: Colors.black12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    borderSide: BorderSide(width: 1, color: Colors.black12)),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderSide: BorderSide(width: 1, color: Colors.black)),
                 errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide(width: .5, color: Colors.black12)),
               ),
               validator: (value) => state.isValidPassword
@@ -165,7 +165,7 @@ class LoginView extends StatelessWidget {
               onChanged: (value) => context
                   .read<LoginBloc>()
                   .add(LoginPasswordChanged(password: value))),
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaleFactor: .8),
         ),
       );
     });
@@ -175,13 +175,14 @@ class LoginView extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return state.formStatus is FormSubmitting
           ? MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(20.0) ),
               color: Colors.blueAccent,
               textColor: Colors.white,
               elevation: 2,
               height: 50.0,
               disabledColor: Colors.blueAccent,
               disabledTextColor: Colors.white,
-              minWidth: MediaQuery.of(context).size.width * 0.8,
+              minWidth: MediaQuery.of(context).size.width * 0.90,
               child: CircularProgressIndicator(
                 backgroundColor: Colors.blueAccent,
                 color: Colors.white,
@@ -190,11 +191,12 @@ class LoginView extends StatelessWidget {
               onPressed: null,
             )
           : MaterialButton(
+              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(22.0) ),
               color: Colors.blueAccent,
               textColor: Colors.white,
               elevation: 2,
               height: 50.0,
-              minWidth: MediaQuery.of(context).size.width * 0.8,
+              minWidth: MediaQuery.of(context).size.width * 0.90,
               child: Text('Login'),
               onPressed: () => {
                 if (_formKey.currentState.validate())

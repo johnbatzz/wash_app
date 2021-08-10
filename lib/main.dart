@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/auth/login/login_view.dart';
+import 'package:washapp/auth/login/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:wash_app/session_cubit.dart';
+import 'package:washapp/session_cubit.dart';
 
 import 'app_navigator.dart';
 import 'auth/auth_repository.dart';

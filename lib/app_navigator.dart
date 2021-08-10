@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wash_app/session_cubit.dart';
-import 'package:wash_app/session_view.dart';
-import 'package:wash_app/sesstion_state.dart';
+import 'package:washapp/session_cubit.dart';
+import 'package:washapp/session_view.dart';
+import 'package:washapp/sesstion_state.dart';
 
 import 'auth/auth_cubit.dart';
 import 'auth/auth_navigator.dart';
