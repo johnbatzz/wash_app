@@ -10,6 +10,14 @@ class FormSubmitting extends FormSubmissionStatus {
 	FormSubmitting();
 }
 
+class FacebookSubmitting extends FormSubmissionStatus {
+	FacebookSubmitting();
+}
+
+class GoogleSubmitting extends FormSubmissionStatus {
+	GoogleSubmitting();
+}
+
 class SubmissionSuccess extends FormSubmissionStatus {
 	SubmissionSuccess();
 }

@@ -11,8 +11,38 @@ import 'package:washapp/widget/custom_spacer.dart';
 import '../auth_repository.dart';
 import 'login_state.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
+  LoginViewState createState() => LoginViewState();
+}
+
+class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+
+  AnimationController _controller;
+  Animation<Offset> _offsetAnimation;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+    _offsetAnimation.isDismissed;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.fromDirection(0, -1),
+      end: Offset(0.0, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +52,15 @@ class LoginView extends StatelessWidget {
           authRepo: context.read<AuthRepository>(),
           authCubit: context.read<AuthCubit>(),
         ),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            _loginForm(),
-            _showSignUpButton(context),
-          ],
+        child: SlideTransition(
+          position: _offsetAnimation,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              _loginForm(),
+              _showSignUpButton(context),
+            ],
+          ),
         ),
       ),
     );
@@ -64,31 +97,11 @@ class LoginView extends StatelessWidget {
                 CustomSpacer(
                   height: 20,
                 ),
-                _facebookLoginButton(),
-                CustomSpacer(height: 20),
-                _googleSigninButton()
+                _loginWithSocialMediaAccount()
               ],
             ),
           ),
         ));
-  }
-
-  Widget _otherLogin() {
-    return Text('Or Signin with');
-  }
-
-  Widget _showSignUpButton(BuildContext context) {
-    return SafeArea(
-      child: TextButton(
-        child: Text('Don\'t have an account? Sign up.'),
-        onPressed: () => context.read<AuthCubit>().showSignUp(),
-      ),
-    );
-  }
-
-  void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget _userNameField() {
@@ -175,7 +188,8 @@ class LoginView extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return state.formStatus is FormSubmitting
           ? MaterialButton(
-              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(20.0) ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
               color: Colors.blueAccent,
               textColor: Colors.white,
               elevation: 2,
@@ -191,7 +205,8 @@ class LoginView extends StatelessWidget {
               onPressed: null,
             )
           : MaterialButton(
-              shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(22.0) ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22.0)),
               color: Colors.blueAccent,
               textColor: Colors.white,
               elevation: 2,
@@ -206,43 +221,122 @@ class LoginView extends StatelessWidget {
     });
   }
 
-  Widget _facebookLoginButton() {
-    return MaterialButton(
-      color: Colors.blueAccent,
-      textColor: Colors.white,
-      elevation: 2,
-      height: 50.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          new Icon(MdiIcons.facebook),
-          SizedBox(
-            width: 20,
-          ),
-          Text('Signin with Facebook'),
-        ],
-      ),
-      onPressed: () => {},
+  Widget _otherLogin() {
+    return Text(
+      'Or Signin with',
+      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
     );
   }
 
-  Widget _googleSigninButton() {
-    return MaterialButton(
-      color: Colors.white,
-      textColor: Colors.redAccent,
-      elevation: 2,
-      height: 50.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          new Icon(MdiIcons.google),
-          SizedBox(
-            width: 20,
-          ),
-          Text('Signin with Google'),
-        ],
-      ),
-      onPressed: () => {},
+  Widget _loginWithSocialMediaAccount() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _facebookLoginButton(),
+        CustomSpacer(
+          width: 20,
+        ),
+        _googleSigninButton()
+      ],
     );
+  }
+
+  Widget _facebookLoginButton() {
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return state.formStatus is FacebookSubmitting
+          ? MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0)),
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              elevation: 2,
+              height: 50.0,
+              minWidth: 20.0,
+              disabledColor: Colors.blueAccent,
+              disabledTextColor: Colors.white,
+              child: SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.blueAccent,
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              ),
+              onPressed: null,
+            )
+          : MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0)),
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              elevation: 5,
+              height: 50.0,
+              minWidth: 20.0,
+              child: Icon(
+                MdiIcons.facebook,
+                size: 18,
+              ),
+              onPressed: () =>
+                  {context.read<LoginBloc>().add(LoginWithFacebook())},
+            );
+    });
+  }
+
+  Widget _googleSigninButton() {
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return state.formStatus is GoogleSubmitting
+          ? MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0)),
+              color: Colors.blueAccent,
+              textColor: Colors.white,
+              elevation: 2,
+              height: 50.0,
+              minWidth: 20.0,
+              disabledColor: Colors.blueAccent,
+              disabledTextColor: Colors.white,
+              child: SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                  color: Colors.redAccent,
+                  strokeWidth: 2,
+                ),
+              ),
+              onPressed: null,
+            )
+          : MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0)),
+              color: Colors.white,
+              textColor: Colors.redAccent,
+              elevation: 5,
+              height: 50.0,
+              minWidth: 20.0,
+              child: Icon(
+                MdiIcons.google,
+                size: 18,
+              ),
+              onPressed: () =>
+                  {context.read<LoginBloc>().add(LoginWithGoogle())},
+            );
+    });
+  }
+
+  Widget _showSignUpButton(BuildContext context) {
+    return SafeArea(
+      child: TextButton(
+        child: Text('Don\'t have an account? Sign up.'),
+        onPressed: () => context.read<AuthCubit>().showSignUp(),
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

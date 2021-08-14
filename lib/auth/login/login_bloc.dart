@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../form_submission_status.dart';
@@ -26,25 +27,49 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 			// Form submitted
 		} else if (event is LoginSubmitted) {
 			yield state.copyWith(formStatus: FormSubmitting());
-			
 			try {
-				final userId = await authRepo.login(
-					userName: state.userName,
-					password: state.password,
+				AuthCredentials user = await authRepo.login(
+						userName: state.userName,
+						password: state.password
 				);
-				yield state.copyWith(formStatus: SubmissionSuccess());
-				
-				authCubit.launchSession(AuthCredentials(
-					userName: state.userName,
-					userId: userId,
-				));
+				if (user == null) {
+					yield state.copyWith(formStatus: InitialFormStatus());
+				} else {
+					yield state.copyWith(formStatus: SubmissionSuccess());
+
+					authCubit.launchSession(user);
+				}
 			} catch (e) {
 				yield state.copyWith(formStatus: SubmissionFailed(e));
 			}
 		} else if (event is LoginWithFacebook) {
-		
+			yield state.copyWith(formStatus: FacebookSubmitting());
+			try {
+				AuthCredentials user = await authRepo.loginWithFacebook();
+				if (user == null) {
+					yield state.copyWith(formStatus: InitialFormStatus());
+				} else {
+					yield state.copyWith(formStatus: SubmissionSuccess());
+
+					authCubit.launchSession(user);
+				}
+			} catch (e) {
+				yield state.copyWith(formStatus: SubmissionFailed(e));
+			}
 		} else if (event is LoginWithGoogle) {
-		
+			yield state.copyWith(formStatus: GoogleSubmitting());
+			try {
+				AuthCredentials user = await authRepo.loginWithGoogle();
+				if (user == null) {
+					yield state.copyWith(formStatus: InitialFormStatus());
+				} else {
+					yield state.copyWith(formStatus: SubmissionSuccess());
+
+					authCubit.launchSession(user);
+				}
+			} catch (e) {
+				yield state.copyWith(formStatus: SubmissionFailed(e));
+			}
 		}
 	}
 }

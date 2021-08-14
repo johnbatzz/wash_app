@@ -5,12 +5,14 @@ class AuthCredentials {
 	String password;
 	String phoneNumber;
 	String userId;
+	String photoUrl;
 	
 	AuthCredentials({
 		this.userName,
 		this.password,
 		this.phoneNumber,
-		this.userId
+		this.userId,
+		this.photoUrl
 	});
 	
 }

@@ -13,7 +13,6 @@ class AppNavigator extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		return BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
-			print('state ======>>>>>> ${state}');
 			return Navigator(
 				pages: [
 					// Show loading screen

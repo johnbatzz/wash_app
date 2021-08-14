@@ -19,17 +19,24 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 		} else if (event is SignUpPasswordChanged) {
 			yield state.copyWith(password: event.password);
 			
+		} else if (event is PhoneNumberChanged) {
+			yield state.copyWith(phoneNumber: event.phoneNumber);
+
 		} else if (event is SignUpSubmitted) {
 			yield state.copyWith(formStatus: FormSubmitting());
 			
-			authCubit.showConfirmSignUp(
-				userName: state.userName,
-				phoneNumber: state.phoneNumber,
-				password: state.password,
-			);
+			// authCubit.showConfirmSignUp(
+			// 	userName		: state.userName,
+			// 	password		: state.password,
+			// 	phoneNumber	: state.phoneNumber
+			// );
 			
 			try {
-				await authRepo.login();
+				await authRepo.signUp(
+						userName		: state.userName,
+						phoneNumber	: state.phoneNumber,
+						password		: state.password
+				);
 				yield state.copyWith(formStatus: SubmissionSuccess());
 			} catch(e) {
 				yield state.copyWith(formStatus: SubmissionFailed(e));

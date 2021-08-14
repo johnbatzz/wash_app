@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:washapp/auth/login/login_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:washapp/session_cubit.dart';
 
@@ -23,12 +21,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        backgroundColor: Colors.white
       ),
       home: RepositoryProvider(
 	      create: (context) => AuthRepository(),
 	      child:  BlocProvider(
 		      create: (context) => SessionCubit(authRepo: context.read<AuthRepository>()),
-		      child: AppNavigator(),
+		      child: AnimatedSwitcher(
+            duration: Duration(seconds: 1),
+              child: AppNavigator()
+          ),
 	      ),
       ),
     );
