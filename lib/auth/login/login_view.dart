@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:washapp/auth/form_submission_status.dart';
 import 'package:washapp/auth/auth_cubit.dart';
 import 'package:washapp/auth/login/login_bloc.dart';
 import 'package:washapp/auth/login/login_event.dart';
+import 'package:washapp/main.dart';
 import 'package:washapp/widget/custom_spacer.dart';
 
 import '../auth_repository.dart';
@@ -71,7 +73,7 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
         listener: (context, state) {
           final formStatus = state.formStatus;
           if (formStatus is SubmissionFailed) {
-            _showSnackBar(context, formStatus.exception.toString());
+            _showSnackBar(context, "Login failed. Email and Password does not match!");
           }
         },
         child: Form(
@@ -223,7 +225,7 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
 
   Widget _otherLogin() {
     return Text(
-      'Or Signin with',
+      'Or SignIn With',
       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
     );
   }

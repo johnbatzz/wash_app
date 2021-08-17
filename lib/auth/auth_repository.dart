@@ -24,7 +24,7 @@ class AuthRepository {
     @required String password,
   }) async {
     await FirebaseAuthenticationService(FirebaseAuth.instance)
-        .signUpWithEmailAndPassword(userName, password);
+        .signUpWithEmailAndPassword(userName, password, phoneNumber);
   }
 
   Future<String> confirmSignUp({

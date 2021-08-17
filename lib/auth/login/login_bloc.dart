@@ -33,13 +33,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 						password: state.password
 				);
 				if (user == null) {
-					yield state.copyWith(formStatus: InitialFormStatus());
+					yield state.copyWith(formStatus: SubmissionFailed(null));
 				} else {
 					yield state.copyWith(formStatus: SubmissionSuccess());
 
 					authCubit.launchSession(user);
 				}
-			} catch (e) {
+			} on Exception catch (e) {
 				yield state.copyWith(formStatus: SubmissionFailed(e));
 			}
 		} else if (event is LoginWithFacebook) {
@@ -47,13 +47,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 			try {
 				AuthCredentials user = await authRepo.loginWithFacebook();
 				if (user == null) {
-					yield state.copyWith(formStatus: InitialFormStatus());
+					yield state.copyWith(formStatus: SubmissionFailed(null));
 				} else {
 					yield state.copyWith(formStatus: SubmissionSuccess());
 
 					authCubit.launchSession(user);
 				}
-			} catch (e) {
+			} on Exception catch (e) {
 				yield state.copyWith(formStatus: SubmissionFailed(e));
 			}
 		} else if (event is LoginWithGoogle) {
@@ -61,13 +61,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 			try {
 				AuthCredentials user = await authRepo.loginWithGoogle();
 				if (user == null) {
-					yield state.copyWith(formStatus: InitialFormStatus());
+					yield state.copyWith(formStatus: SubmissionFailed(null));
 				} else {
 					yield state.copyWith(formStatus: SubmissionSuccess());
 
 					authCubit.launchSession(user);
 				}
-			} catch (e) {
+			} on Exception catch (e) {
 				yield state.copyWith(formStatus: SubmissionFailed(e));
 			}
 		}
