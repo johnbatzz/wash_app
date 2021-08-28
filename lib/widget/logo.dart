@@ -5,8 +5,7 @@ class Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'assets/images/logo.png',
-      height: 100,
+      height: 200,
     );
   }
-
 }

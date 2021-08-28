@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:washapp/data/model/user.dart';
 
 import '../form_submission_status.dart';
-import '../auth_credentials.dart';
 import '../auth_cubit.dart';
 import '../auth_repository.dart';
 import 'login_event.dart';
@@ -28,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 		} else if (event is LoginSubmitted) {
 			yield state.copyWith(formStatus: FormSubmitting());
 			try {
-				AuthCredentials user = await authRepo.login(
+				User user = await authRepo.login(
 						userName: state.userName,
 						password: state.password
 				);
@@ -45,7 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 		} else if (event is LoginWithFacebook) {
 			yield state.copyWith(formStatus: FacebookSubmitting());
 			try {
-				AuthCredentials user = await authRepo.loginWithFacebook();
+				User user = await authRepo.loginWithFacebook();
 				if (user == null) {
 					yield state.copyWith(formStatus: SubmissionFailed(null));
 				} else {
@@ -59,7 +59,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 		} else if (event is LoginWithGoogle) {
 			yield state.copyWith(formStatus: GoogleSubmitting());
 			try {
-				AuthCredentials user = await authRepo.loginWithGoogle();
+				User user = await authRepo.loginWithGoogle();
 				if (user == null) {
 					yield state.copyWith(formStatus: SubmissionFailed(null));
 				} else {

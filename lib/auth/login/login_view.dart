@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:washapp/auth/form_submission_status.dart';
 import 'package:washapp/auth/auth_cubit.dart';
 import 'package:washapp/auth/login/login_bloc.dart';
 import 'package:washapp/auth/login/login_event.dart';
-import 'package:washapp/main.dart';
 import 'package:washapp/widget/custom_spacer.dart';
+import 'package:washapp/widget/logo.dart';
 
 import '../auth_repository.dart';
 import 'login_state.dart';
@@ -17,7 +16,8 @@ class LoginView extends StatefulWidget {
   LoginViewState createState() => LoginViewState();
 }
 
-class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixin {
+class LoginViewState extends State<LoginView>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
   AnimationController _controller;
@@ -34,15 +34,15 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     )..forward();
     _offsetAnimation = Tween<Offset>(
-      begin: Offset.fromDirection(0, -1),
+      begin: Offset.fromDirection(1, 2),
       end: Offset(0.0, 0.0),
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: Curves.decelerate,
     ));
   }
 
@@ -56,12 +56,38 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
         ),
         child: SlideTransition(
           position: _offsetAnimation,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              _loginForm(),
-              _showSignUpButton(context),
-            ],
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        stops: [
+                          0.1,
+                          0.2,
+                          0.4,
+                        ],
+                        colors: [
+                          Colors.indigoAccent,
+                          Colors.lightBlueAccent,
+                          Colors.white,
+                        ])),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    // CustomAnimatedBackground(),
+                    _loginForm(),
+                    _showSignUpButton(context),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -73,16 +99,21 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
         listener: (context, state) {
           final formStatus = state.formStatus;
           if (formStatus is SubmissionFailed) {
-            _showSnackBar(context, "Login failed. Email and Password does not match!");
+            _showSnackBar(
+                context, "Login failed. Email and Password does not match!");
           }
         },
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 50, horizontal: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Logo(),
+                CustomSpacer(
+                  height: 40,
+                ),
                 _userNameField(),
                 CustomSpacer(
                   height: 10,
@@ -118,15 +149,15 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
               prefixIcon: Icon(Icons.person),
               border: new OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                borderSide: BorderSide(width: 1, color: Colors.black12),
+                borderSide: BorderSide(width: 2, color: Colors.black12),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
-                borderSide: BorderSide(width: 1, color: Colors.black12),
+                borderSide: BorderSide(width: 2, color: Colors.black12),
               ),
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  borderSide: BorderSide(width: 1, color: Colors.black)),
+                  borderSide: BorderSide(width: 3, color: Colors.black12)),
               errorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   borderSide: BorderSide(width: .5, color: Colors.black12)),
@@ -159,15 +190,16 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
                 prefixIcon: Icon(Icons.security_outlined),
                 border: new OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                  borderSide: BorderSide(width: 1, color: Colors.black12),
+                  borderSide: BorderSide(width: 2, color: Colors.black12),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  borderSide: BorderSide(width: 1, color: Colors.black12),
+                  borderSide: BorderSide(width: 2, color: Colors.black12),
                 ),
                 focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    borderSide: BorderSide(width: 1, color: Colors.black)),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderSide: BorderSide(width: 3, color: Colors.black12),
+                ),
                 errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide(width: .5, color: Colors.black12)),
@@ -331,7 +363,11 @@ class LoginViewState extends State<LoginView> with SingleTickerProviderStateMixi
   Widget _showSignUpButton(BuildContext context) {
     return SafeArea(
       child: TextButton(
-        child: Text('Don\'t have an account? Sign up.'),
+        child: Text(
+          'Don\'t have an account? Sign up.',
+          textScaleFactor: 1.0,
+          style: TextStyle(color: Colors.white),
+        ),
         onPressed: () => context.read<AuthCubit>().showSignUp(),
       ),
     );

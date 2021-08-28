@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:washapp/auth/signup/signup_bloc.dart';
 import 'package:washapp/auth/signup/signup_state.dart';
+import 'package:washapp/widget/custom_animated_background.dart';
 import 'package:washapp/widget/custom_spacer.dart';
+import 'package:washapp/widget/logo.dart';
 
 import '../form_submission_status.dart';
 import '../auth_cubit.dart';
@@ -14,7 +16,8 @@ class SignUpView extends StatefulWidget {
   SignUpViewState createState() => SignUpViewState();
 }
 
-class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMixin {
+class SignUpViewState extends State<SignUpView>
+    with SingleTickerProviderStateMixin {
   final _signUpFormKey = GlobalKey<FormState>();
 
   AnimationController _controller;
@@ -31,15 +34,15 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     )..forward();
     _offsetAnimation = Tween<Offset>(
-      begin: Offset.fromDirection(0, 1.0),
+      begin: Offset.fromDirection(2, 2),
       end: Offset(0.0, 0.0),
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: Curves.decelerate,
     ));
   }
 
@@ -53,12 +56,38 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
         ),
         child: SlideTransition(
           position: _offsetAnimation,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              _signUpForm(),
-              _showLoginButton(context),
-            ],
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        stops: [
+                          0.1,
+                          0.2,
+                          0.4,
+                        ],
+                        colors: [
+                          Colors.indigoAccent,
+                          Colors.lightBlueAccent,
+                          Colors.white,
+                        ])),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    CustomAnimatedBackground(),
+                    _signUpForm(),
+                    _showLoginButton(context),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -76,10 +105,12 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
         child: Form(
           key: _signUpFormKey,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(vertical: 50, horizontal: 40),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Logo(),
+                CustomSpacer(),
                 _usernameField(),
                 CustomSpacer(),
                 _phoneNumberField(),
@@ -101,15 +132,15 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
           hintText: 'Email',
           border: new OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            borderSide: BorderSide(width: 1, color: Colors.black12),
+            borderSide: BorderSide(width: 2, color: Colors.black12),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
-            borderSide: BorderSide(width: 1, color: Colors.black12),
+            borderSide: BorderSide(width: 2, color: Colors.black12),
           ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(width: 1, color: Colors.black)),
+              borderSide: BorderSide(width: 3, color: Colors.black12)),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               borderSide: BorderSide(width: .5, color: Colors.black12)),
@@ -134,15 +165,15 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
           hintText: 'Phone Number',
           border: new OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            borderSide: BorderSide(width: 1, color: Colors.black12),
+            borderSide: BorderSide(width: 2, color: Colors.black12),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
-            borderSide: BorderSide(width: 1, color: Colors.black12),
+            borderSide: BorderSide(width: 2, color: Colors.black12),
           ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(width: 1, color: Colors.black)),
+              borderSide: BorderSide(width: 3, color: Colors.black12)),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               borderSide: BorderSide(width: .5, color: Colors.black12)),
@@ -153,7 +184,7 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
                 ? 'Field required.'
                 : 'Invalid Phone Number.',
         onChanged: (value) => context.read<SignUpBloc>().add(
-					PhoneNumberChanged(phoneNumber: value),
+              PhoneNumberChanged(phoneNumber: value),
             ),
       );
     });
@@ -168,15 +199,15 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
           hintText: 'Password',
           border: new OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
-            borderSide: BorderSide(width: 1, color: Colors.black12),
+            borderSide: BorderSide(width: 2, color: Colors.black12),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
-            borderSide: BorderSide(width: 1, color: Colors.black12),
+            borderSide: BorderSide(width: 2, color: Colors.black12),
           ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
-              borderSide: BorderSide(width: 1, color: Colors.black)),
+              borderSide: BorderSide(width: 3, color: Colors.black12)),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               borderSide: BorderSide(width: .5, color: Colors.black12)),
@@ -204,6 +235,7 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
               elevation: 2,
               height: 50.0,
               child: CircularProgressIndicator(),
+              onPressed: null,
             )
           : MaterialButton(
               shape: RoundedRectangleBorder(
@@ -225,7 +257,11 @@ class SignUpViewState extends State<SignUpView> with SingleTickerProviderStateMi
   Widget _showLoginButton(BuildContext context) {
     return SafeArea(
       child: TextButton(
-        child: Text('Already have an account? Sign in.'),
+        child: Text(
+          'Already have an account? Sign in.',
+          textScaleFactor: 1.0,
+          style: TextStyle(color: Colors.white),
+        ),
         onPressed: () => context.read<AuthCubit>().showLogin(),
       ),
     );

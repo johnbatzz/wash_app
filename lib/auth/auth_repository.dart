@@ -1,16 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter/cupertino.dart';
+import 'package:washapp/data/model/user.dart';
 
-import 'auth_credentials.dart';
 import 'auth_service.dart';
 
 class AuthRepository {
-  Future<AuthCredentials> attemptAutoLogin() async {
+  Future<User> attemptAutoLogin() async {
     return await FirebaseAuthenticationService(FirebaseAuth.instance)
         .autoLogin();
   }
 
-  Future<AuthCredentials> login({
+  Future<User> login({
     @required String userName,
     @required String password,
   }) async {
@@ -35,12 +35,12 @@ class AuthRepository {
     return 'abc';
   }
 
-  Future<AuthCredentials> loginWithFacebook() async {
+  Future<User> loginWithFacebook() async {
     return await FirebaseAuthenticationService(FirebaseAuth.instance)
         .signWithFacebook();
   }
 
-  Future<AuthCredentials> loginWithGoogle() async {
+  Future<User> loginWithGoogle() async {
     return await FirebaseAuthenticationService(FirebaseAuth.instance)
         .signWithGoogle();
   }
